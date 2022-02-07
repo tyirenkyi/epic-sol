@@ -1,14 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
 
-//models
-import Game from "../../models/Game";
-
-interface Props {
-  game: Game
-}
-
-const GameListItem = ({game} : Props) => {
+const GameListItem = ({game}) => {
   const router = useRouter();
 
   return (
