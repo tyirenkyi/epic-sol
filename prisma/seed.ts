@@ -113,6 +113,8 @@ async function main() {
   }
 }
 
+export {}
+
 main()
   .catch((e) => {
     console.error(e)
