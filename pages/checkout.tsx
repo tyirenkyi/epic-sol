@@ -59,7 +59,7 @@ const CheckoutModal = () => {
 
   const submitOrder = async () => {
     try {
-      const { data } = await axios.post(`http://localhost:3000/api/order`, {
+      const { data } = await axios.post(`https://epic-sol.vercel.app//api/order`, {
         email: session.user.email,
         quantity: 2,
         amount: 100,
@@ -83,7 +83,7 @@ const CheckoutModal = () => {
 
   const submitShipping = async (form) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/address", form);
+      const res = await axios.post("https://epic-sol.vercel.app//api/address", form);
       fetchUserData();
       toast.success("Shipping information updated");
       setShowShippingForm(false);
@@ -96,7 +96,7 @@ const CheckoutModal = () => {
 
   const fetchUserData = async() => {
     try {
-      const { data } = await axios.get(`http://localhost:3000/api/users/${session.user.email}`);
+      const { data } = await axios.get(`https://epic-sol.vercel.app//api/users/${session.user.email}`);
       updateUser(data);
     } catch (error) {
       console.error(error);
@@ -117,7 +117,7 @@ const CheckoutModal = () => {
 
     try {
       await connection.confirmTransaction(signature, "processed");
-      await axios.post("http://localhost:3000/api/payment", { status: "paid", order_id: orderId })
+      await axios.post("https://epic-sol.vercel.app//api/payment", { status: "paid", order_id: orderId })
         .then(res => {
           toast.success("Payment received");
           updateProducts([]);

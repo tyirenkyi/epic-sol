@@ -18,7 +18,7 @@ const Home: NextPage = (props) => {
 
   const fetchUserData = async() => {
     try {
-      const { data } = await axios.get(`http://localhost:3000/api/users/${session.user.email}`);
+      const { data } = await axios.get(`https://epic-sol.vercel.app//api/users/${session.user.email}`);
       updateUser(data);
     } catch (error) {
       console.error(error);
@@ -27,7 +27,7 @@ const Home: NextPage = (props) => {
 
   useEffect(() => {
     (async () => {
-      const data = await axios.get("http://localhost:3000/api/products");
+      const data = await axios.get("https://epic-sol.vercel.app//api/products");
       setProducts(data.data);
     })();
   }, []);

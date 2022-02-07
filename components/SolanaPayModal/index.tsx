@@ -59,7 +59,7 @@ const SolanaPayModal = ({ open, closeModal, orderId, total } : Props) => {
         console.log('\n 🖌  Signature found: ', data.signature);
         toast.success('✅ Payment validated');
         updateProducts([]);
-        await axios.post("http://localhost:3000/api/payment", { status: "paid", order_id: orderId })
+        await axios.post("https://epic-sol.vercel.app//api/payment", { status: "paid", order_id: orderId })
         .then(res => {
           toast.success("Payment received");
           router.push("/");
