@@ -30,6 +30,11 @@ import Layout from "../components/Layout/index";
 import CartProvider from "../contexts/CartProvider";
 import AuthProvider from "../contexts/AuthProvider";
 
+declare global {
+  interface Window {
+    prisma: any;
+  }
+}
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const network = WalletAdapterNetwork.Devnet;
