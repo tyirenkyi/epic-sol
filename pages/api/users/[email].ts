@@ -9,7 +9,7 @@ handler.get((req, res) => {
 
     prisma.user.findUnique({
         where: {
-            email: email
+            email: email as string
         },
         select: {
             name: true,
