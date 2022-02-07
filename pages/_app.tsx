@@ -30,14 +30,6 @@ import Layout from "../components/Layout/index";
 import CartProvider from "../contexts/CartProvider";
 import AuthProvider from "../contexts/AuthProvider";
 
-declare global {
-  namespace NodeJS {
-    interface Global {
-      prisma: any;
-    }
-  }
-}
-
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
