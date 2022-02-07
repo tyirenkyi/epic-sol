@@ -15,7 +15,7 @@ const GamePage = () => {
   const [product, setProduct] = useState<Product>(null);
 
   const findGame = async () => {
-    const res = await axios.get(`https://epic-sol.vercel.app//api/products/${id}`);
+    const res = await axios.get(`https://epic-sol.vercel.app/api/products/${id}`);
     console.log(res.data);
     
     const prod = res.data[0];
