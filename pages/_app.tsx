@@ -31,8 +31,10 @@ import CartProvider from "../contexts/CartProvider";
 import AuthProvider from "../contexts/AuthProvider";
 
 declare global {
-  interface Window {
-    prisma: any;
+  namespace NodeJS {
+    interface Global {
+      prisma: any;
+    }
   }
 }
 
