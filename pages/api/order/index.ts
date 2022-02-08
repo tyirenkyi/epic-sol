@@ -1,29 +1,12 @@
 import nc from "next-connect";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../lib/prisma";
-import Cors from 'cors'
 
-const cors = Cors({
-    methods: ['POST', 'HEAD'],
-  })
 const handler = nc<NextApiRequest, NextApiResponse>();
-
-function runMiddleware(req, res, fn) {
-    return new Promise((resolve, reject) => {
-      fn(req, res, (result) => {
-        if (result instanceof Error) {
-          return reject(result)
-        }
-  
-        return resolve(result)
-      })
-    })
-  }
   
 
 handler.post(async(req,res) => {
     try {
-        await runMiddleware(req, res, cors)
         const {email, products, quantity, amount} = req.body;
 
         const order = await prisma.order.create({
