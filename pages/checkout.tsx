@@ -316,19 +316,23 @@ const SummaryItem = ({ label, value }: { label: string; value: number }) => (
 
 const ShippingInfo = ({ editShipping, user }: { editShipping: () => void, user: any }) => (
   <div className="mt-2">
-    <p>{user && user.name}</p>
-    <p>
-      {user.Address && user.Address.address}
-    </p>
-    <p>{user.Address &&user.Address.City}</p>
-    <div className="flex flex-row justify-end w-full">
-      <button
-        onClick={editShipping}
-        className="py-2 mt-4 text-appBlack rounded border-appBlue border w-[100px] uppercase text-[12px] font-semibold tracking-widest"
-      >
-        Edit
-      </button>
-    </div>
+    {user && (
+      <>
+        <p>{user.name}</p>
+        <p>
+          {user.Address && user.Address.address}
+        </p>
+        <p>{user.Address &&user.Address.City}</p>
+        <div className="flex flex-row justify-end w-full">
+          <button
+            onClick={editShipping}
+            className="py-2 mt-4 text-appBlack rounded border-appBlue border w-[100px] uppercase text-[12px] font-semibold tracking-widest"
+          >
+            Edit
+          </button>
+        </div>
+      </>
+    )}
   </div>
 );
 
