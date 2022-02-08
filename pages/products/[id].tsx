@@ -3,12 +3,14 @@ import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Product } from "@prisma/client";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 //contexts
 import { CartContext } from "../../contexts/CartProvider";
 import { toast } from "react-toastify";
 
 const GamePage = () => {
+  const { data: session } = useSession();
   const { updateProducts, products } = useContext(CartContext);
   const router = useRouter();
   const { id } = router.query;
@@ -22,7 +24,11 @@ const GamePage = () => {
     setProduct(prod);
   };
 
-  const addToCart = () => {    
+  const addToCart = () => { 
+    if(!session) {
+      toast.info("Please sign in to add to cart");
+      return;
+    }   
     if(products.length > 0) {
       const index = products.findIndex(item => item.id === product.id);
       console.log(index);
@@ -36,6 +42,10 @@ const GamePage = () => {
   }
 
   const buyNow = () => {
+    if(!session) {
+      toast.info("Please sign in to place an order.");
+      return
+    }
     addToCart();
     router.push('/checkout');
   }
