@@ -248,7 +248,7 @@ const CheckoutModal = () => {
                     />
                   </div>
                 </button>
-                <WalletMultiButton />
+                <WalletMultiButton className="bg-[#512da8]"/>
               </>
             )}
           </div>
