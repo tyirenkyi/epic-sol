@@ -318,9 +318,9 @@ const ShippingInfo = ({ editShipping, user }: { editShipping: () => void, user: 
   <div className="mt-2">
     <p>{user && user.name}</p>
     <p>
-      {user && user.Address.address}
+      {user.Address && user.Address.address}
     </p>
-    <p>{user &&user.Address.City}</p>
+    <p>{user.Address &&user.Address.City}</p>
     <div className="flex flex-row justify-end w-full">
       <button
         onClick={editShipping}
