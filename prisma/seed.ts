@@ -113,7 +113,7 @@ async function main() {
   }
 }
 
-export {}
+
 
 main()
   .catch((e) => {

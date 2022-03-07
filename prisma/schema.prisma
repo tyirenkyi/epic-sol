@@ -2,12 +2,16 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
+  // url                  = env("DATABASE_URL")
+  // shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
+  // referentialIntegrity = "prisma"
 }
 
 model Account {
@@ -49,6 +53,7 @@ model User {
   sessions      Session[]
   order         Order[]
   Address       Address?
+  role          String    @default("USER")
 }
 
 model Address {
@@ -80,18 +85,19 @@ model Product {
 }
 
 model Order {
-  id         String    @id @default(cuid())
-  user       User      @relation(fields: [user_id], references: [id])
-  user_id    String
-  products    Product[]   @relation(fields: [product_id], references: [id])
-  product_id String[]
-  quantity   Int
-  total      Int
-  payment    Payment[]
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [user_id], references: [id])
+  user_id   String
+  quantity  Int
+  total     Int
+  payment   Payment[]
+  Product   Product?  @relation(fields: [productId], references: [id])
+  productId String?
 }
 
 model Payment {
   id         String   @id @default(cuid())
+  tx_id      String
   order      Order    @relation(fields: [order_id], references: [id])
   order_id   String
   status     String
