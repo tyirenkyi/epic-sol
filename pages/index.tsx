@@ -10,32 +10,34 @@ import GameListItem from "../components/GameListItem/index";
 //contexts
 import { AuthContext } from "../contexts/AuthProvider";
 
-
 const Home: NextPage = (props) => {
   const { updateUser } = useContext(AuthContext);
   const { data: session } = useSession();
   const [products, setProducts] = useState([]);
 
-  const fetchUserData = async() => {
+  const fetchUserData = async () => {
     try {
-      const { data } = await axios.get(`https://epic-sol.vercel.app/api/users/${session.user.email}`);
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_ENDPOINT}/api/users/${session.user.email}`
+      );
       updateUser(data);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   useEffect(() => {
     (async () => {
-      const data = await axios.get("https://epic-sol.vercel.app/api/products");
+      const data = await axios.get(
+        `${process.env.NEXT_PUBLIC_ENDPOINT}/api/products`
+      );
       setProducts(data.data);
     })();
   }, []);
 
   useEffect(() => {
-    if(session && session.user)
-      fetchUserData();
-  }, [session])
+    if (session && session.user) fetchUserData();
+  }, [session]);
 
   return (
     <div className="bg-appBlack min-h-screen py-[100px]">

@@ -1,9 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import {
-  useState,
-  useContext,
-  useEffect,
-} from "react";
+import { useState, useContext, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import {
   Keypair,
@@ -12,9 +8,7 @@ import {
   PublicKey,
 } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import {
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { actions } from "@metaplex/js";
@@ -47,10 +41,11 @@ const CheckoutModal = () => {
   const wallet = useWallet();
 
   const getTotal = () => {
-    const amountReducer = (previousValue, currentValue) => previousValue + currentValue.price;
+    const amountReducer = (previousValue, currentValue) =>
+      previousValue + currentValue.price;
     const total = products.reduce(amountReducer, 0);
     setTotal(total);
-  }
+  };
 
   const selectSolanaPay = () => {
     setActiveMethod("solana-pay");
@@ -59,12 +54,15 @@ const CheckoutModal = () => {
 
   const submitOrder = async () => {
     try {
-      const { data } = await axios.post(`https://epic-sol.vercel.app/api/order`, {
-        email: session.user.email,
-        quantity: 2,
-        amount: 100,
-        products: products.map(item => item.id),
-      });
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_ENDPOINT}api/order`,
+        {
+          email: session.user.email,
+          quantity: 2,
+          amount: 100,
+          products: products.map((item) => item.id),
+        }
+      );
       setOrderId(data.id);
       toast.success("Order Submitted");
       handlePayment();
@@ -76,14 +74,16 @@ const CheckoutModal = () => {
   };
 
   const handlePayment = () => {
-    if(activeMethod === "solana-pay")
-      setShowSolanaPay(true);
+    if (activeMethod === "solana-pay") setShowSolanaPay(true);
     else transferSol();
-  }
+  };
 
   const submitShipping = async (form) => {
     try {
-      const res = await axios.post("https://epic-sol.vercel.app/api/address", form);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_ENDPOINT}/api/address`,
+        form
+      );
       fetchUserData();
       toast.success("Shipping information updated");
       setShowShippingForm(false);
@@ -94,15 +94,16 @@ const CheckoutModal = () => {
     }
   };
 
-  const fetchUserData = async() => {
+  const fetchUserData = async () => {
     try {
-      const { data } = await axios.get(`https://epic-sol.vercel.app/api/users/${session.user.email}`);
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_ENDPOINT}/api/users/${session.user.email}`
+      );
       updateUser(data);
     } catch (error) {
       console.error(error);
     }
-  }
-
+  };
 
   const transferSol = async () => {
     const transaction = new Transaction().add(
@@ -117,31 +118,37 @@ const CheckoutModal = () => {
 
     try {
       await connection.confirmTransaction(signature, "processed");
-      await axios.post("https://epic-sol.vercel.app/api/payment", { status: "paid", order_id: orderId })
-        .then(res => {
+      await axios
+        .post(`${process.env.NEXT_PUBLIC_ENDPOINT}/api/payment`, {
+          status: "paid",
+          order_id: orderId,
+        })
+        .then((res) => {
           toast.success("Payment received");
           updateProducts([]);
           router.push("/");
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
-        })
-      
+        });
     } catch (error) {}
   };
 
   const create_NFT = async () => {
     try {
       const response = await actions.mintNFT({
-        connection, wallet: wallet,
+        connection,
+        wallet: wallet,
         uri: "https://34c7ef24f4v2aejh75xhxy5z6ars4xv47gpsdrei6fiowptk2nqq.arweave.net/3wXyF1wvK6ARJ_9ue-O58CMuXrz5nyHEiPFQ6z5q02E",
-        maxSupply: 1
+        maxSupply: 1,
       });
       console.log(response);
-    } catch (error) { console.error(error) }
-  }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const burn_function =async (
+  const burn_function = async (
     ownerAddress: anchor.web3.PublicKey,
     tokenAddress: string,
     mint: string
@@ -163,49 +170,48 @@ const CheckoutModal = () => {
       );
       const signature = await wallet.sendTransaction(tx, connection);
       await connection.confirmTransaction(signature, "processed");
-    } catch (error) { console.error(error) }
-  }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const fetchSolPrice = async() => {
+  const fetchSolPrice = async () => {
     try {
-      const { data } = await axios.get("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
+      const { data } = await axios.get(
+        "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
+      );
       setSolPrice(data.solana.usd);
     } catch (error) {
-      toast.error('Unable to fetch SOL price.');
+      toast.error("Unable to fetch SOL price.");
     }
-  }
+  };
 
   const computeSolPrice = () => {
     const amount = Number(total / solPrice).toFixed(2);
-    setSolTotal(parseFloat(amount))
-  }
+    setSolTotal(parseFloat(amount));
+  };
 
   useEffect(() => {
-    if(wallet.publicKey)
-      setActiveMethod('wallet')
-  }, [wallet.publicKey])
+    if (wallet.publicKey) setActiveMethod("wallet");
+  }, [wallet.publicKey]);
 
   useEffect(() => {
-    if(products.length === 0)
-      router.back();
-    else 
-      getTotal();
-  }, [])
+    if (products.length === 0) router.back();
+    else getTotal();
+  }, []);
 
   useEffect(() => {
     fetchSolPrice();
-  }, [])
+  }, []);
 
   useEffect(() => {
     computeSolPrice();
-  }, [solPrice])
-  
+  }, [solPrice]);
+
   useEffect(() => {
-    if(user && user.Address)
-      setShowShippingForm(false);
-    else
-      setShowShippingForm(true);
-  }, [])
+    if (user && user.Address) setShowShippingForm(false);
+    else setShowShippingForm(true);
+  }, []);
 
   return (
     <div className="py-[20px] h-full overflow-y-hidden">
@@ -216,9 +222,7 @@ const CheckoutModal = () => {
           </h1>
           <div className="mt-3 border-t-[3px] border-t-appBlue" />
           <div className="pt-4">
-            <h2 className="uppercase text-[14px] tracking-wider">
-              Shipping
-            </h2>
+            <h2 className="uppercase text-[14px] tracking-wider">Shipping</h2>
             {showShippingForm ? (
               <ShippingForm onSubmit={submitShipping} user={user} />
             ) : (
@@ -234,9 +238,7 @@ const CheckoutModal = () => {
                 </h2>
                 <button
                   className={`py-2 pl-2 mt-2 rounded bg-appGray2 mb-4 w-[150px] flex items-start justify-start flex-row ${
-                    activeMethod === "solana-pay"
-                      ? "border border-appBlue"
-                      : ""
+                    activeMethod === "solana-pay" ? "border border-appBlue" : ""
                   }`}
                   onClick={selectSolanaPay}
                 >
@@ -248,7 +250,7 @@ const CheckoutModal = () => {
                     />
                   </div>
                 </button>
-                <WalletMultiButton className="bg-[#512da8]"/>
+                <WalletMultiButton className="bg-[#512da8]" />
               </>
             )}
           </div>
@@ -269,21 +271,23 @@ const CheckoutModal = () => {
             <hr className="my-2" />
             <SummaryItem label="Total" value={total} />
             <div className="flex flex-row justify-end mt-1">
-              <p>{Number(solTotal).toLocaleString('en')} SOL</p>
+              <p>{Number(solTotal).toLocaleString("en")} SOL</p>
             </div>
           </div>
           <div className="absolute bottom-0 h-[100px] w-full left-0 px-4 bg-appGray2 flex flex-col justify-center">
             <button
-              disabled={activeMethod === ''}
+              disabled={activeMethod === ""}
               onClick={submitOrder}
-              className={`py-5 uppercase ${activeMethod === '' ? 'bg-appGray' : 'bg-appBlue'} text-appGray2 text-[12px] tracking-widest font-semibold w-full rounded drop-shadow-lg`}
+              className={`py-5 uppercase ${
+                activeMethod === "" ? "bg-appGray" : "bg-appBlue"
+              } text-appGray2 text-[12px] tracking-widest font-semibold w-full rounded drop-shadow-lg`}
             >
               place order
             </button>
           </div>
         </div>
       </div>
-      <SolanaPayModal 
+      <SolanaPayModal
         open={showSolanaPay}
         closeModal={() => setShowSolanaPay(false)}
         orderId={orderId}
@@ -309,20 +313,24 @@ const SummaryItem = ({ label, value }: { label: string; value: number }) => (
   <div className="flex flex-row items-center justify-between my-[2px]">
     <p className="tracking-wider text-appGray4 text-[14px]">{label}</p>
     <p className="tracking-wider text-appGray4 text-[14px]">
-      ${Number(value).toLocaleString('en')}
+      ${Number(value).toLocaleString("en")}
     </p>
   </div>
 );
 
-const ShippingInfo = ({ editShipping, user }: { editShipping: () => void, user: any }) => (
+const ShippingInfo = ({
+  editShipping,
+  user,
+}: {
+  editShipping: () => void;
+  user: any;
+}) => (
   <div className="mt-2">
     {user && (
       <>
         <p>{user.name}</p>
-        <p>
-          {user.Address && user.Address.address}
-        </p>
-        <p>{user.Address &&user.Address.City}</p>
+        <p>{user.Address && user.Address.address}</p>
+        <p>{user.Address && user.Address.City}</p>
         <div className="flex flex-row justify-end w-full">
           <button
             onClick={editShipping}

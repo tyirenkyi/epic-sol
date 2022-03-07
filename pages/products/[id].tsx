@@ -17,38 +17,37 @@ const GamePage = () => {
   const [product, setProduct] = useState<Product>(null);
 
   const findGame = async () => {
-    const res = await axios.get(`https://epic-sol.vercel.app/api/products/${id}`);
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_ENDPOINT}/api/products/${id}`
+    );
     console.log(res.data);
-    
+
     const prod = res.data[0];
     setProduct(prod);
   };
 
-  const addToCart = () => { 
-    if(!session) {
+  const addToCart = () => {
+    if (!session) {
       toast.info("Please sign in to add to cart");
       return;
-    }   
-    if(products.length > 0) {
-      const index = products.findIndex(item => item.id === product.id);
+    }
+    if (products.length > 0) {
+      const index = products.findIndex((item) => item.id === product.id);
       console.log(index);
-      
-      if(index === -1)
-        updateProducts([...products, product]);
-      else
-        toast.info("You already have this item in your cart")
-    } else
-      updateProducts([product])
-  }
+
+      if (index === -1) updateProducts([...products, product]);
+      else toast.info("You already have this item in your cart");
+    } else updateProducts([product]);
+  };
 
   const buyNow = () => {
-    if(!session) {
+    if (!session) {
       toast.info("Please sign in to place an order.");
-      return
+      return;
     }
     addToCart();
-    router.push('/checkout');
-  }
+    router.push("/checkout");
+  };
 
   useEffect(() => {
     findGame();
@@ -83,13 +82,15 @@ const GamePage = () => {
               />
               <p className="mt-8 text-appGray2">${product?.price}</p>
               <button
-                onClick={buyNow} 
-                className="uppercase text-appGray2 bg-appBlue rounded w-full h-[50px] text-[14px] font-medium my-4">
+                onClick={buyNow}
+                className="uppercase text-appGray2 bg-appBlue rounded w-full h-[50px] text-[14px] font-medium my-4"
+              >
                 Buy Now
               </button>
-              <button 
+              <button
                 onClick={addToCart}
-                className="border border-appGray2 rounded w-full h-[50px] text-appGray2 uppercase text-[14px] font-medium mb-8">
+                className="border border-appGray2 rounded w-full h-[50px] text-appGray2 uppercase text-[14px] font-medium mb-8"
+              >
                 Add to Cart
               </button>
               <GameDetail label="Developer" value={product?.developer} />
